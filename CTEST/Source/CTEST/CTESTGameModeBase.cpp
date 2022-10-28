@@ -1,11 +1,14 @@
 #include "CTESTGameModeBase.h"
 #include "MyPawn.h"
+#include "PlayerPawn.h"
 #include "MyActor.h"
 
 ACTESTGameModeBase::ACTESTGameModeBase()
 {
     //CDO로 클래스 기본 객체를 불러온다.
-    DefaultPawnClass = AMyPawn::StaticClass();
+    //DefaultPawnClass = AMyPawn::StaticClass();
+    DefaultPawnClass = APlayerPawn::StaticClass();
+
 }
 
 void ACTESTGameModeBase::BeginPlay()

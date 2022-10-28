@@ -6,9 +6,13 @@
 #include "MyPawn.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Particles/ParticleSystem.h"
+
+
+
 #include "Materials/Material.h"
 
 
@@ -42,6 +46,8 @@ AMyPawn::AMyPawn()
 	RootComponent = RootMesh;
 	//SetRootComponent(mMesh);
 
+	
+
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	FollowCam = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCam"));
 	CameraArm->AttachTo(RootMesh); //AttachTo로 해당 컴포넌트의 하위로 붙일 수 있다!!
@@ -52,6 +58,14 @@ AMyPawn::AMyPawn()
 	CameraArm->CameraLagSpeed = 3.0f;
 	CameraArm->bDoCollisionTest = false;
 	FollowCam->AttachTo(CameraArm);
+
+
+	RootMesh->SetCollisionObjectType(ECC_Pawn);
+	//RootMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+
+
+	//HitActor와 Overlap이벤트가 발생하도록 [Generate Overlap Events를 True로 체크!]
+	RootMesh->SetGenerateOverlapEvents(true);
 }
 
 // Called when the game starts or when spawned
@@ -91,18 +105,30 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction(TEXT("AddSphere"), IE_Pressed,this, &AMyPawn::AddSphere);
 	PlayerInputComponent->BindAction(TEXT("SpawnActor"), IE_Pressed, this, &AMyPawn::SpawnActor);
 	PlayerInputComponent->BindAction(TEXT("SpawnMovingActor"), IE_Pressed, this, &AMyPawn::SpawnMovingActor);
-	PlayerInputComponent->BindAction(TEXT("Explosion"), IE_Pressed, this, &AMyPawn::Explosion);
-	//PlayerInputComponent->BindAction(TEXT("Explosion"), IE_Released, this, &AMyPawn::Explosion);
+	PlayerInputComponent->BindAction(TEXT("LeftMouseButton"), IE_Pressed, this, &AMyPawn::Explosion);
+	//PlayerInputComponent->BindAction(TEXT("LeftMouseButton"), IE_Released, this, &AMyPawn::Explosion);
 }
 
 void AMyPawn::MoveForward(float value)
 {
-	AddActorWorldOffset(FVector(value* MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0));
+	/*value = -1 ~ 0 ~ 1*/
+
+	//FRotator rotator = GetControlRotation();
+	////rotator.Roll = 0;
+	////rotator.Pitch = 0;
+	//AddMovementInput(UKismetMathLibrary::GetForwardVector(rotator));
+	AddActorWorldOffset(FVector(value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0),true);
 }
 
 void AMyPawn::MoveRight(float value)
 {
-	AddActorWorldOffset(FVector(0, value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0));
+	/*value = -1 ~ 0 ~ 1*/
+
+	//FRotator rotator = GetControlRotation();
+	////rotator.Roll = 0;
+	////rotator.Pitch = 0;
+	//AddMovementInput(UKismetMathLibrary::GetRightVector(rotator));
+	AddActorWorldOffset(FVector(0, value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0), true);
 }
 
 void AMyPawn::AddSphere()
