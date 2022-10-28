@@ -59,7 +59,7 @@ public:
 	----------------------------------------------------------------------------------------------*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	class UStaticMeshComponent* mMesh;
+	class UStaticMeshComponent* RootMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class USpringArmComponent* CameraArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")

@@ -28,32 +28,23 @@ AMyPawn::AMyPawn()
 
 		※ CreateDefaultSubObject
 		   노드명이 겹치면 안된다!! 빌드는 되는데 런타임에서 죽는다!
-
 		   널체크 & 예외체크를 해주는 것이 좋긴하다.
 	-------------------------------------------------------------------------*/
-
-	static ConstructorHelpers::FObjectFinder<UMaterial>
-		m_colormat(TEXT("Material'/Game/Materials/M_Color.M_Color'"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		m_Sphere(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+		SphereMesh(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial>
+		BasicMaterial(TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
 	
-	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
-	UMaterialInstanceDynamic* mi_colormat = UMaterialInstanceDynamic::Create(m_colormat.Object, mMesh);
+	RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
 
-	
+	RootMesh->SetStaticMesh(SphereMesh.Object);
+	RootMesh->SetMaterial(0, BasicMaterial.Object);
+	RootComponent = RootMesh;
 	//SetRootComponent(mMesh);
-
-	mMesh->SetStaticMesh(m_Sphere.Object);
-	float colorR = 0;
-	float colorG = 1;
-	float colorB = 0;
-	mi_colormat->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(colorR, colorG, colorB));
-	mMesh->SetMaterial(0, mi_colormat);
-	RootComponent = mMesh;
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	FollowCam = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCam"));
-	CameraArm->AttachTo(mMesh); //AttachTo로 해당 컴포넌트의 하위로 붙일 수 있다!!
+	CameraArm->AttachTo(RootMesh); //AttachTo로 해당 컴포넌트의 하위로 붙일 수 있다!!
 	//FRotator(Y,X,Z)
 	CameraArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(-30.0f, 0.0f, 0.0f));
 	CameraArm->TargetArmLength = 400.0f;
