@@ -3,8 +3,8 @@
 #include "PlayerPawn.h"
 #include "MyActor.h"
 #include "MyHUD.h"
-
 #include "Blueprint/UserWidget.h"
+
 
 ACTESTGameModeBase::ACTESTGameModeBase()
 {
@@ -39,8 +39,9 @@ void ACTESTGameModeBase::BeginPlay()
         타입은 런타임에서 달라질 수 있으므로, 실제 객체의 클래스를 리턴하는 GetClass의 리턴값은
         StaticClass의 리턴값과 다를 수 있다.
     ---------------------------------------------------------------------------*/
-    UBlueprint* obj = LoadObject<UBlueprint>(nullptr, TEXT("WidgetBlueprint'/Game/Blueprints/test.test'"));
-    UUserWidget* ui = CreateWidget<UUserWidget>(GetWorld(), *obj->GeneratedClass);
-    ui->AddToViewport();
     //*obj->GeneratedClass : 완전히 생성된 가장 최근 클래스에 대한 포인터
+    //UBlueprint* obj = LoadObject<UBlueprint>(nullptr, TEXT("WidgetBlueprint'/Game/Blueprints/test.test'"));
+    //UUserWidget* ui = CreateWidget<UUserWidget>(GetWorld(), *obj->GeneratedClass);
+    //ui->AddToViewport();
+    
 }
