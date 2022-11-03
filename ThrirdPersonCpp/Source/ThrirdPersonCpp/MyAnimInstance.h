@@ -18,7 +18,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Status")
 	float Speed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status" meta=(DisplayName="IsInAir", ScriptName="IsInAir"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status", meta=(DisplayName="IsInAir", ScriptName="IsInAir"))
 	//bool bIsInAir = false;
 	uint32 bIsInAir : 1;
 
