@@ -22,4 +22,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void OnTimer();
 	FTimerHandle TimerHandle;
+	UStaticMeshComponent* StaticMesh;
+	UMaterial* MyMat;
+
+	UFUNCTION(BlueprintCallable, Category = "Function")
+	void TestFunction();
 };

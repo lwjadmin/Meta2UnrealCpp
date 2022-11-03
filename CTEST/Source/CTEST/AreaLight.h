@@ -46,9 +46,22 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     class UBoxComponent* RootBoxComp;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
     class UPointLightComponent* PointLightComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     class UStaticMeshComponent* CubeMeshComp;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+        float DesiredIntensity;
+
+    // 퓨어함수
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "BlueprintPureTest")
+        float GetDesiredIntensity();
+
+    // 블루프린트 리턴 -> 함수의 리턴값 혹은 & 붙여서 사용
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Test")
+        UPointLightComponent* GetPointLightInfo(bool& IsVisible, float& Intensity);
+
+
 };

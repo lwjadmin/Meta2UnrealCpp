@@ -64,7 +64,6 @@ public:
 	class USpringArmComponent* CameraArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	class UCameraComponent* FollowCam;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 	float MoveSpeed = 1000.0f;
 };

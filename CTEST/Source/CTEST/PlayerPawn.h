@@ -34,6 +34,7 @@ public:
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void MouseButtonClick();
+	void MultiTrace();
 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -45,4 +46,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 		float MoveSpeed = 1000.0f;
+
 };

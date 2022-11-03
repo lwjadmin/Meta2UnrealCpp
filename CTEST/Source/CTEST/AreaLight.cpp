@@ -75,3 +75,15 @@ void AAreaLight::OnOverlapEnd(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	PointLightComp->SetVisibility(false);
 }
 
+UPointLightComponent* AAreaLight::GetPointLightInfo(bool& IsVisible, float& Intensity)
+{
+	IsVisible = PointLightComp->IsVisible();
+	Intensity = DesiredIntensity;
+	return PointLightComp;
+}
+
+float AAreaLight::GetDesiredIntensity()
+{
+	return DesiredIntensity;
+}
+

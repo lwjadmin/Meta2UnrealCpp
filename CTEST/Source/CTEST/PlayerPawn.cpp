@@ -43,12 +43,12 @@ APlayerPawn::APlayerPawn()
     bUseControllerRotationRoll = true;
 
     //UMG로 에임을 표시하기 전단계 : 구체를 만들어 조준점역할을 하도록 만든다.
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> m_sphere(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
-    UStaticMeshComponent* Aim = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimComponent"));
-    Aim->SetStaticMesh(m_sphere.Object);
-    Aim->SetRelativeLocation(FVector(300, 0, 0));
-    Aim->AttachTo(RootComponent);
-    Aim->SetRelativeScale3D(FVector(0.1, 0.1, 0.1));
+    //static ConstructorHelpers::FObjectFinder<UStaticMesh> m_sphere(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+    //UStaticMeshComponent* Aim = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimComponent"));
+    //Aim->SetStaticMesh(m_sphere.Object);
+    //Aim->SetRelativeLocation(FVector(300, 0, 0));
+    //Aim->AttachTo(RootComponent);
+    //Aim->SetRelativeScale3D(FVector(0.1, 0.1, 0.1));
 }
 
 // Called when the game starts or when spawned
@@ -70,6 +70,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APlayerPawn::MoveForward);
     PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APlayerPawn::MoveRight);
     PlayerInputComponent->BindAction(TEXT("LeftMouseButton"), IE_Pressed, this, &APlayerPawn::MouseButtonClick);
+    PlayerInputComponent->BindAction(TEXT("RightMouseButton"), IE_Pressed, this, &APlayerPawn::MultiTrace);
 }
 
 void APlayerPawn::MoveForward(float value)
@@ -119,4 +120,35 @@ void APlayerPawn::MouseButtonClick()
     GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("Fire!"));
     //빨간색 라인을 그린다.
     DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f);
+}
+
+void APlayerPawn::MultiTrace()
+{
+    FVector start = GetActorLocation();
+    float radius = 200.0f;
+
+    static FName TraceTag = FName(TEXT("MultiTrace"));
+    FCollisionShape CollShape;
+    FCollisionQueryParams QueryParam;
+    CollShape.ShapeType = ECollisionShape::Sphere;
+    CollShape.SetSphere(radius);
+
+    GetWorld()->DebugDrawTraceTag = TraceTag;
+    QueryParam.bTraceComplex = true;
+    QueryParam.TraceTag = TraceTag;
+
+    QueryParam.AddIgnoredActor(this);
+    TArray<FHitResult> HitResultList;
+
+
+    //Blueprint Equvialent Node : SphereTraceByChannel
+    GWorld->SweepMultiByChannel(HitResultList, start, start + 0.1f, FQuat::FQuat(), ECC_Camera, CollShape, QueryParam);
+
+    for (FHitResult HitResult : HitResultList)
+    {
+        if (HitResult.GetActor() != nullptr)
+        {
+            HitResult.GetActor()->TakeDamage(10, FDamageEvent(), NULL, this);
+        }
+    }
 }

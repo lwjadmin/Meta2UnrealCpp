@@ -10,23 +10,26 @@ AMyActor::AMyActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	UStaticMeshComponent* StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> EngineDefaultSphereMesh(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> MyMat(TEXT("Material'/Game/Materials/M_Color.M_Color'"));
-	
+	static ConstructorHelpers::FObjectFinder<UMaterial> mat(TEXT("Material'/Game/Materials/M_Color.M_Color'"));
+	if (mat.Succeeded())
+	{
+		MyMat = mat.Object;
+	}
 	RootComponent = StaticMesh;
-	//SetRootComponent(StaticMesh);
-
 	StaticMesh->SetStaticMesh(EngineDefaultSphereMesh.Object);
-	UMaterialInstanceDynamic* MyMatInst = UMaterialInstanceDynamic::Create(MyMat.Object, StaticMesh);
-	MyMatInst->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(1, 0, 0, 0));
-	StaticMesh->SetMaterial(0, MyMatInst);
+	
 }
 
 void AMyActor::BeginPlay()
 {
 	Super::BeginPlay();
 	//3초에 1번 TimerTestHandle 실행 
+	UMaterialInstanceDynamic* MyMatInst = UMaterialInstanceDynamic::Create(MyMat, StaticMesh);
+	MyMatInst->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(1, 0, 0, 0));
+	StaticMesh->SetMaterial(0, MyMatInst);
+
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyActor::OnTimer, 3.0f, false/*true : Looping*/);
 }
 
@@ -52,3 +55,7 @@ void AMyActor::Tick(float DeltaTime)
 	AddActorLocalOffset(FVector(0, 0, 1));
 }
 
+void AMyActor::TestFunction()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("TestFunction Called!"));
+}
