@@ -1,4 +1,6 @@
 CTEST/Content/*.* filter=lfs diff=lfs merge=lfs -text
 CTEST2/Content/*.* filter=lfs diff=lfs merge=lfs -text
 FlightSimulatorCpp/Content/*.* filter=lfs diff=lfs merge=lfs -text
+HomeCpp/Content/*.* filter=lfs diff=lfs merge=lfs -text
 ThrirdPersonCpp/Content/*.* filter=lfs diff=lfs merge=lfs -text
+
