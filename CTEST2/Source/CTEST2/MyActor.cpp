@@ -2,7 +2,6 @@
 
 
 #include "MyActor.h"
-
 #include "Kismet/KismetStringLibrary.h"
 
 // Sets default values
@@ -11,89 +10,111 @@ AMyActor::AMyActor()
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Sphere(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> M_BasicShapeMaterial(TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
+
+    RootMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootMesh"));
+    RootComponent = RootMesh;
+    RootMesh->SetMaterial(0, M_BasicShapeMaterial.Object);
+    RootMesh->SetStaticMesh(SM_Sphere.Object);
+
 }
 
 // Called when the game starts or when spawned
 void AMyActor::BeginPlay()
 {
     Super::BeginPlay();
+    //FStringTest();
 
+    ITestInterface* TestInterface = Cast<ITestInterface>(this);
+    if (TestInterface)
+    {
+        TestInterface->Execute_CallInterface(this);
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("MyActor Not Implements ITestInterface!!"));
+    }
+}
+
+void AMyActor::FStringTest()
+{
     TArray<FString> strList;
-    
+
     //[1]Add는 엘리먼트 유형으로 인스턴스를 배열에 복사(또는 이동)합니다.
     strList.Add(TEXT("HELLO"));
     strList.Add(TEXT("WORLD"));
-    
-    FString strArr[] = { TEXT("NICE"), TEXT("TO"), TEXT("MEET"), TEXT("YOU")};
+
+    FString strArr[] = { TEXT("NICE"), TEXT("TO"), TEXT("MEET"), TEXT("YOU") };
     //[2]Append는 배열을 컨테이너에 복사할 수 있습니다.
     strList.Append(strArr, UE_ARRAY_COUNT(strArr));
-    
+
     //AddUnique는 기존 컨테이너가 동일한 엘리먼트가 존재하지 않을 경우 새 엘리먼트만 추가합니다.
     strList.AddUnique(TEXT("!"));
     strList.AddUnique(TEXT("!"));
-    
+
     //Insert는 컨테이너의 특정 위치에 새 엘리먼트를 추가합니다.
     strList.Insert(TEXT("BRAVE"), 1);
-    
+
     //결합된 문자열 리스트를 출력해보기
     FString Message = "";
     for (auto& str : strList)
     {
-    	Message += (" " + str);
+        Message += (" " + str);
     }
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, Message);
-    
+
     //String.Join
     FString Message2 = UKismetStringLibrary::JoinStringArray(strList);
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Yellow, Message2);
-    
+
     //문자열 리스트를 Brave 제외하고 하나씩 출력해보기
     for (int32 i = 0; i != strList.Num(); ++i)
     {
-    	if (strList[i].Compare(TEXT("BRAVE")) == 0)
-    	{
-    		continue;
-    	}
-    	GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, strList[i]);
+        if (strList[i].Compare(TEXT("BRAVE")) == 0)
+        {
+            continue;
+        }
+        GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, strList[i]);
     }
-    
+
     //문자열 리스트를 하나씩 출력해보기
     for (FString str : strList)
     {
-    	GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, str);
+        GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, str);
     }
-    
+
     TArray<int32> IntList;
     //컨테이너 초기화
     IntList.Init(10, 5); // IntArray = {10,10,10,10,10};
-    
+
     //IntList 컨테이너 안에 들어있는 모든 값을 더해서 출력해보기
     int32 sum = 0;
     for (auto ival : IntList)
     {
-    	sum += ival;
+        sum += ival;
     }
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, FString::FromInt(sum));
-    
+
     //문자열로 변환 후 "{10,10,10,10,10}"과 같은 형식으로 출력해보기
     FString strNumList = "";
     for (int32 i = 0; i != IntList.Num(); ++i)
     {
-    	//cout << i == 0 ? "{" : "" << IntList[i] << (i != IntList[i].Num()-1 ? ",":"}\n")
-    	strNumList.Append((i == 0 ? TEXT("{") : TEXT("")));
-    	strNumList.Append(FString::FromInt(IntList[i]));
-    	strNumList.Append((i != IntList.Num() - 1 ? TEXT(",") : TEXT("}")));
+        //cout << i == 0 ? "{" : "" << IntList[i] << (i != IntList[i].Num()-1 ? ",":"}\n")
+        strNumList.Append((i == 0 ? TEXT("{") : TEXT("")));
+        strNumList.Append(FString::FromInt(IntList[i]));
+        strNumList.Append((i != IntList.Num() - 1 ? TEXT(",") : TEXT("}")));
     }
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Green, strNumList);
-    
+
     //컨테이너의 컨테이너 : 가능, 컨테이너의 값(Data) : Pointer이다. 
     TArray<TArray<FString>> strListList;
     strListList.Add(strList);
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Blue, strListList[0][0]);
-    
+
     strListList.Add({ TEXT("0"),TEXT("1") });
     strListList[1].Add(TEXT("2"));
-    
+
     GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Blue, strListList[1][2]);
 
 
@@ -156,7 +177,7 @@ void AMyActor::BeginPlay()
     }
 
     /*-----------------------------------------------------------------------------
-    CDO : Class Default Object = UObject 
+    CDO : Class Default Object = UObject
     1. 언리얼 엔진의 관리를 받는 클래스는 UObject 클래스를 상속받는다.
     2. 컴파일 시 언리얼 헤더툴(UHT)에서 UObject 클래스와 관련된 코드(마치 C++을 C#처럼 만들어주는)를 생성한다.
     3. 개별 UObject의 UClass가 생성되고 난 다음, 각 액터가 UClass 인스턴스를 상속받는다.
@@ -184,5 +205,10 @@ void AMyActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+}
+
+void AMyActor::CallInterface_Implementation()
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("MyActor Interface Called!"));
 }
 
